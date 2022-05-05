@@ -4,8 +4,8 @@ const app = express();
 const { animals } = require('./data/animals.json');
 
 function filterByQuery(query, animalsArray) {
-    let personalityTraitsArray  = [];
-    
+    let personalityTraitsArray = [];
+
     // save the animalsArray as filteredResults here
     let filteredResults = animalsArray;
 
@@ -30,7 +30,7 @@ function filterByQuery(query, animalsArray) {
                 animal => animal.personalityTraits.indexOf(trait) !== -1
             );
         });
-        
+
     }
     if (query.diet) {
         filteredResults = filteredResults.filter(animal => animal.diet === query.diet);
@@ -45,6 +45,13 @@ function filterByQuery(query, animalsArray) {
     // Return the filtered results
     return filteredResults;
 }
+
+// take in the id and array of animals and return a single animal object
+function findById(id, animalsArray) {
+    const result = animalsArray.filter(animal => animal.id === id)[0];
+    return result;
+}
+
 app.get('/api/animals', (req, res) => {
     let results = animals;
     if (req.query) {
@@ -52,6 +59,16 @@ app.get('/api/animals', (req, res) => {
     }
     res.json(results);
 });
+
+app.get('/api/animals/:id', (req, res) => {
+    const result = findById(req.params.id, animals);
+    if (result) {
+        res.json(result);
+    } else {
+        res.send(404);
+    }
+});
+
 // said to add to the end of server.js ???
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
