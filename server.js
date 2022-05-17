@@ -5,6 +5,8 @@ const { animals } = require('./data/animals.json');
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+// make public files readily available (static resources); makes front-end code accessed without having a specific server endpoint created for it!
+app.use(express.static('public'));
 // parse incoming string or array data
 app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
@@ -126,7 +128,28 @@ app.post('/api/animals', (req, res) => {
     }
 });
 
-// said to add to the end of server.js ???
+// Route ('/') that brings us to the root route of the server/route used to create the homepage for a server and repsond with the index.html file; front end
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+// GET route to join the animals.html to the root path of the server
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+// GET route to join the zookeepers.html to the root path of the server
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+
+// GET 'wildcard' route to catch requests for routes that do not exist
+// '*' wildcard route must always come last
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+// app.listen always needs to be last
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
 });
